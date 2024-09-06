@@ -14,13 +14,15 @@ const Pokemon = () => {
     await fetch(`https://pokeapi.co/api/v2/pokemon/${name}/`)
       .then((data) => data.json())
       .then((data) => {
-        console.log(data);
         setPokemon(data);
       });
   };
 
   return (
     <div>
+      <div className="flex items-center justify-center bg-yellow-500 w-full h-16">
+        <h1 className="text-3xl font-bold my-auto">Pokémon World</h1>
+      </div>
       <h1 className="text-3xl font-bold mt-8 flex items-center justify-center flex-col">
         {name.charAt(0).toUpperCase() + name.slice(1)}
       </h1>
