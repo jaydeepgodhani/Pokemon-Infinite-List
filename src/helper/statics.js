@@ -1,0 +1,1 @@
+export const pokeArt = 'https://img.pokemondb.net/artwork/ZZZ.jpg';
