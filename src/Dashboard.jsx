@@ -6,17 +6,19 @@ import Loading from "./Loading";
 import { findRelatedPokemons } from "./helper/findRelatedPokemons";
 
 const limit = 24;
+let pokeData = [];
+let savedIndex = 0;
+// save index and data also for page switch
 
 function Dashboard() {
   const [searchList, setSearchList] = useState(null);
-  const [items, setItems] = useState(null);
-  const [index, setIndex] = useState(limit);
+  const [items, setItems] = useState(pokeData ? pokeData : null);
+  const [index, setIndex] = useState(savedIndex);
   const [isLoading, setIsLoading] = useState(false);
   const loaderRef = useRef(null);
 
   const handleKeyUp = (e) => {
-    const values = findRelatedPokemons(e.target.value);
-    setSearchList(values);
+    setSearchList(findRelatedPokemons(e.target.value));
   };
 
   const fetchData = useCallback(async () => {
@@ -25,42 +27,30 @@ function Dashboard() {
     fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${index}`)
       .then((data) => data.json())
       .then((data) => {
-        setItems((prevItems) => [...prevItems, ...data.results]);
+        setItems((prevItems) =>
+          (prevItems || []).length === 0
+            ? data.results
+            : [...prevItems, ...data.results]
+        );
       });
 
-    setIndex((prevIndex) => prevIndex + 24);
+    setIndex((prevIndex) => prevIndex + limit);
     setIsLoading(false);
   }, [index, isLoading]);
 
-  useEffect(() => {
-    const varvar = async() => {
-      setIsLoading(true);
-      await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=0`)
-      .then((data) => data.json())
-      .then((data) => {
-        setItems(data.results);
-      })
-      .finally(setIsLoading(false));
-    }
-    varvar();
-  }, []);
+  pokeData = items;
+  savedIndex = index;
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       const target = entries[0];
-      if (target.isIntersecting) {
-        fetchData();
-      }
+      if (target.isIntersecting) fetchData();
     });
 
-    if (loaderRef.current) {
-      observer.observe(loaderRef.current);
-    }
+    if (loaderRef.current) observer.observe(loaderRef.current);
 
     return () => {
-      if (loaderRef.current) {
-        observer.unobserve(loaderRef.current);
-      }
+      if (loaderRef.current) observer.unobserve(loaderRef.current);
     };
   }, [fetchData]);
 
