@@ -1,29 +1,68 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Card from "./Card";
 import Header from "./Header";
+import Loading from "./Loading";
 import { findRelatedPokemons } from "./helper/findRelatedPokemons";
 
-function Dashboard() {
-  const [pokeList, setPokeList] = useState();
-  const [searchList, setSearchList] = useState(null);
+const limit = 24;
 
-  const fetchPokemon = async () => {
-    await fetch("https://pokeapi.co/api/v2/pokemon?limit=24&offset=0")
-      .then((data) => data.json())
-      .then((data) => {
-        setPokeList(data.results);
-      });
-  };
+function Dashboard() {
+  const [searchList, setSearchList] = useState(null);
+  const [items, setItems] = useState(null);
+  const [index, setIndex] = useState(limit);
+  const [isLoading, setIsLoading] = useState(false);
+  const loaderRef = useRef(null);
 
   const handleKeyUp = (e) => {
     const values = findRelatedPokemons(e.target.value);
     setSearchList(values);
   };
 
+  const fetchData = useCallback(async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${index}`)
+      .then((data) => data.json())
+      .then((data) => {
+        setItems((prevItems) => [...prevItems, ...data.results]);
+      });
+
+    setIndex((prevIndex) => prevIndex + 24);
+    setIsLoading(false);
+  }, [index, isLoading]);
+
   useEffect(() => {
-    fetchPokemon();
+    const varvar = async() => {
+      setIsLoading(true);
+      await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=0`)
+      .then((data) => data.json())
+      .then((data) => {
+        setItems(data.results);
+      })
+      .finally(setIsLoading(false));
+    }
+    varvar();
   }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      const target = entries[0];
+      if (target.isIntersecting) {
+        fetchData();
+      }
+    });
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => {
+      if (loaderRef.current) {
+        observer.unobserve(loaderRef.current);
+      }
+    };
+  }, [fetchData]);
 
   return (
     <div>
@@ -43,7 +82,7 @@ function Dashboard() {
                   key={item}
                   to={`/pokemon/${item}`}
                   target="_blank"
-                  rel='noopener noreferrer'
+                  rel="noopener noreferrer"
                   className="block py-2 px-2 hover:text-blue-800 cursor-pointer hover:bg-slate-100"
                 >
                   {item}
@@ -54,10 +93,21 @@ function Dashboard() {
         </div>
       </div>
       <div className="flex flex-wrap flex-row mt-6 mx-auto justify-center">
-        {pokeList &&
-          pokeList.map((item) => (
+        {items &&
+          items.map((item) => (
             <Card key={item.name} name={item.name} url={item.url} />
           ))}
+      </div>
+
+      <div ref={loaderRef}>
+        {isLoading && (
+          <div>
+            <svg className="flex justify-center items-center w-full h-24 my-12">
+              <use xlinkHref="#fade-circles"></use>
+              <Loading />
+            </svg>
+          </div>
+        )}
       </div>
     </div>
   );
