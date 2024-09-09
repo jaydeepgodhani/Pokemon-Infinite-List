@@ -45,7 +45,7 @@ function Dashboard() {
     const observer = new IntersectionObserver((entries) => {
       const target = entries[0];
       if (target.isIntersecting) fetchData();
-    });
+    }); // browser's viewport is default root considered
 
     if (loaderRef.current) observer.observe(loaderRef.current);
 
