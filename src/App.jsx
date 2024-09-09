@@ -6,7 +6,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/Pokemon-Infinite-List" element={<Dashboard />} />
         <Route path="/pokemon/:name" element={<Pokemon />} />
       </Routes>
     </>
