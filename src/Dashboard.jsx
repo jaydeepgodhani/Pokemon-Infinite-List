@@ -42,10 +42,13 @@ function Dashboard() {
   savedIndex = index;
 
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      const target = entries[0];
-      if (target.isIntersecting) fetchData();
-    }); // browser's viewport is default root considered
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (target.isIntersecting) fetchData();
+      },
+      { threshold: 1.0 }
+    ); // browser's viewport is default root considered
 
     if (loaderRef.current) observer.observe(loaderRef.current);
 
@@ -89,7 +92,7 @@ function Dashboard() {
           ))}
       </div>
 
-      <div ref={loaderRef}>
+      <div ref={loaderRef} className="h-24 w-full">
         {isLoading && (
           <div>
             <svg className="flex justify-center items-center w-full h-24 my-12">
