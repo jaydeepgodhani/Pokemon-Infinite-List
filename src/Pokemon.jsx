@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { pokeArt } from "./helper/statics";
 
 const Pokemon = () => {
+  console.log('pokemon...');
+
   const { name } = useParams();
   const [pokemon, setPokemon] = useState(null);
 

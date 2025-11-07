@@ -1,5 +1,3 @@
-import React from "react";
-
 const Loading = () => {
   return (
     <svg width="0" height="0" className="hidden">
@@ -11,7 +9,7 @@ const Loading = () => {
         <circle
           fill="#000000"
           stroke="#000000"
-          stroke-width="15"
+          strokeWidth="15"
           r="15"
           cx="40"
           cy="100"
@@ -29,7 +27,7 @@ const Loading = () => {
         <circle
           fill="#000000"
           stroke="#000000"
-          stroke-width="15"
+          strokeWidth="15"
           r="15"
           cx="100"
           cy="100"
@@ -47,7 +45,7 @@ const Loading = () => {
         <circle
           fill="#000000"
           stroke="#000000"
-          stroke-width="15"
+          strokeWidth="15"
           r="15"
           cx="160"
           cy="100"

@@ -1,11 +1,10 @@
 /* eslint-disable react/prop-types */
-import React from "react";
 import { Link } from "react-router-dom";
 import { pokeArt } from "./helper/statics";
 
 const Card = ({ name }) => {
   return (
-    <div className="border-black w-60 p-3 m-4 rounded-lg border-2 hover:shadow-xl duration-300 hover:scale-105 hover:shadow-yellow-500">
+    <div className="border-black w-60 p-3 m-4 rounded-lg border-2 hover:shadow-xl duration-300 hover:scale-[1.02] hover:shadow-yellow-500">
       <Link key={name} to={`/pokemon/${name}`}>
         <p className="text-center font-semibold text-xl">{name}</p>
         <div className="flex flex-col justify-start items-center p-4 h-80 w-full">
